@@ -1,0 +1,20 @@
+workflows:
+  mush8-ios-build:
+    name: Build Mush8 IPA
+    max_build_duration: 30
+    instance_type: mac_mini_m1
+    environment:
+      vars:
+        XCODE_SCHEME: "mush8"
+    scripts:
+      - name: Install System Toolchain Dependencies
+        script: |
+          brew install xcodegen
+          rustup target add aarch64-apple-ios
+      - name: Compile Mush8 Executable and Bundle IPA
+        script: |
+          # Bypasses the Xcode developer profile restrictions to make a clean local bundle
+          ./make-ios.sh --ipa
+    artifacts:
+      - build/*.ipa
+      - ~/Downloads/muguetOutput/*.ipa
